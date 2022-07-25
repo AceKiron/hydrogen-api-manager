@@ -16,7 +16,7 @@ async function updateVideoId(WARN) {
     else VIDEO_ID = req.data.items[0].id.videoId;
 }
 
-module.exports = async ({ router, WARN }) => {
+module.exports = async ({ router, INFO, WARN }) => {
     await updateVideoId(WARN);
 
     router.get("/garytheaxolotl", async (req, res) => {
@@ -28,7 +28,8 @@ module.exports = async ({ router, WARN }) => {
         if (Date.now() >= cooldown + 10000) {
             // Fetch new image every 10 seconds
             cooldown = Date.now();
-            cp.execSync(`ffmpeg -i "$(yt-dlp -g ${VIDEO_ID} | head -n 1)" -vframes 1 last.jpg -y`);
+            cp.execSync(`ffmpeg -i "$(yt-dlp -g ${VIDEO_ID} | head -n 1)" -vframes 1 last.jpg -y -v quiet`);
+            INFO("Updated GaryTheAxolotl image");
         }
         
         res.setHeader("Content-type", "image/jpeg");
