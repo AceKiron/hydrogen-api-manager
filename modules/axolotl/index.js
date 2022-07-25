@@ -28,8 +28,8 @@ module.exports = async ({ router, INFO, WARN }) => {
         if (Date.now() >= cooldown + 10000) {
             // Fetch new image every 10 seconds
             cooldown = Date.now();
-            cp.execSync(`ffmpeg -i "$(yt-dlp -g ${VIDEO_ID} | head -n 1)" -vframes 1 last.jpg -y -v quiet`);
-            INFO("Updated GaryTheAxolotl image");
+            cp.exec(`ffmpeg -i "$(yt-dlp -g ${VIDEO_ID} | head -n 1)" -vframes 1 last.jpg -y -v quiet`);
+            INFO("Updating GaryTheAxolotl image");
         }
         
         res.setHeader("Content-type", "image/jpeg");
