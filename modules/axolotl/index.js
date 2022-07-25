@@ -13,7 +13,7 @@ async function updateVideoId(WARN) {
     });
 
     if (req.data.items.length == 0) WARN("Gary the Axolotl isn't live right now");
-    else VIDEO_ID = req.data.items[0].videoId;
+    else VIDEO_ID = req.data.items[0].id.videoId;
 }
 
 module.exports = async ({ router, WARN }) => {
@@ -25,8 +25,8 @@ module.exports = async ({ router, WARN }) => {
             return await updateVideoId(WARN);
         }
         
-        if (Date.now() >= cooldown + 30000) {
-            // Fetch new image every 30 seconds
+        if (Date.now() >= cooldown + 10000) {
+            // Fetch new image every 10 seconds
             cooldown = Date.now();
             cp.execSync(`ffmpeg -i "$(yt-dlp -g ${VIDEO_ID} | head -n 1)" -vframes 1 last.jpg -y`);
         }
