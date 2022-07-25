@@ -35,4 +35,13 @@ module.exports = async ({ router, INFO, WARN }) => {
         res.setHeader("Content-type", "image/jpeg");
         res.send(fs.readFileSync("last.jpg"));
     });
+
+    router.get("/garytheaxolotl/meta", async (req, res) => {
+        if (VIDEO_ID === undefined) {
+            res.sendStatus(503);
+            return await updateVideoId(WARN);
+        }
+
+        res.send({ videoId: VIDEO_ID, channelId: "UCrhYiGXMwsfXB3QTCHmFQiQ" });
+    });
 }
