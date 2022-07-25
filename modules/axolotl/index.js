@@ -6,7 +6,7 @@ let VIDEO_ID;
 
 let cooldown = Date.now();
 
-module.exports = async ({ router, INFO, WARN }) => {
+async function updateVideoId(WARN) {
     const req = await axios({
         method: "GET",
         url: `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCrhYiGXMwsfXB3QTCHmFQiQ&eventType=live&type=video&key=${process.env.GOOGLE_API_KEY}`
@@ -14,9 +14,16 @@ module.exports = async ({ router, INFO, WARN }) => {
 
     if (req.data.items.length == 0) WARN("Gary the Axolotl isn't live right now");
     else VIDEO_ID = req.data.items[0].videoId;
+}
+
+module.exports = async ({ router, WARN }) => {
+    await updateVideoId(WARN);
 
     router.get("/garytheaxolotl", (req, res) => {
-        if (VIDEO_ID === undefined) return res.sendStatus(503);
+        if (VIDEO_ID === undefined) {
+            res.sendStatus(503);
+            return await updateVideoId(WARN);
+        }
         
         if (Date.now() >= cooldown + 30000) {
             // Fetch new image every 30 seconds
