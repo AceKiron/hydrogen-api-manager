@@ -20,14 +20,14 @@ for (const modName of fs.readdirSync("./modules")) {
 
     try {
         const mod = require(`./modules/${modName}`);
-        mod({ router, INFO, OK, WARN, ERROR, FATAL});
-        OK(`Module ${modName} loaded`);
+        mod({ router, INFO, OK, WARN, ERROR, FATAL}).then(() => {
+            OK(`Module ${modName} loaded`);
+            app.use(`/${modName}`, router);
+        });
     } catch (e) {
         WARN(`Failed to load module ${modName}`)
         ERROR(e);
     }
-
-    app.use(`/${modName}`, router);
 }
 
 app.get("/", (req, res) => {

@@ -1,4 +1,4 @@
-module.exports = ({ router, WARN }) => {
+module.exports = async ({ router, WARN }) => {
     router.get("/ping", (req, res) => {
         res.send("Pong!");
     });
