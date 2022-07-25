@@ -3,10 +3,17 @@ const fs = require("fs");
 
 const VIDEO_ID = "vKVBgsOj2pc";
 
-module.exports = ({ router, WARN }) => {
+let cooldown = Date.now();
+
+module.exports = ({ router, INFO }) => {
     router.get("/garytheaxolotl", (req, res) => {
-        const x = cp.execSync(`yt-dlp -g ${VIDEO_ID} | head -n 1`).toString().replace("\n", "");
-        const y = cp.execSync(`ffmpeg -i "${x}" -vframes 1 last.jpg -y`).toString();
+        INFO(`${Date.now() - cooldown - 30000}`);
+        
+        if (Date.now() >= cooldown + 30000) {
+            // Fetch new image every 30 seconds
+            cooldown = Date.now();
+            cp.exec(`ffmpeg -i "$(yt-dlp -g ${VIDEO_ID} | head -n 1)" -vframes 1 last.jpg -y`);
+        }
         
         res.setHeader("Content-type", "image/jpeg");
         res.send(fs.readFileSync("last.jpg"));
