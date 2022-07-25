@@ -19,7 +19,7 @@ async function updateVideoId(WARN) {
 module.exports = async ({ router, WARN }) => {
     await updateVideoId(WARN);
 
-    router.get("/garytheaxolotl", (req, res) => {
+    router.get("/garytheaxolotl", async (req, res) => {
         if (VIDEO_ID === undefined) {
             res.sendStatus(503);
             return await updateVideoId(WARN);
