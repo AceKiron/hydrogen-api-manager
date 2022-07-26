@@ -4,10 +4,33 @@ require("dotenv").config();
 
 const chalk = require("chalk");
 
-function INFO(msg) { console.log(`[${chalk.gray(new Date())}] [${chalk.gray("INFO")}] ${msg}`); }
-function OK(msg) { console.log(`[${chalk.green(new Date())}] [${chalk.green("OK")}] ${msg}`); }
-function WARN(msg) { console.log(`[${chalk.yellow(new Date())}] [${chalk.yellow("WARN")}] ${msg}`); }
-function ERROR(msg) { console.log(`[${chalk.red(new Date())}] [${chalk.red("ERROR")}] ${msg}`); }
+let latestLogs = [];
+let maxLatestLogsLength = 32;
+
+function INFO(msg) {
+    console.log(`[${chalk.gray(new Date())}] [${chalk.gray("INFO")}] ${msg}`);
+    latestLogs.push(`[${new Date()}] [INFO] ${msg}`);
+    if (latestLogs.length == maxLatestLogsLength) latestLogs.shift();
+}
+
+function OK(msg) {
+    console.log(`[${chalk.green(new Date())}] [${chalk.green("OK")}] ${msg}`);
+    latestLogs.push(`[${new Date()}] [OK] ${msg}`);
+    if (latestLogs.length == maxLatestLogsLength) latestLogs.shift();
+}
+
+function WARN(msg) {
+    console.log(`[${chalk.yellow(new Date())}] [${chalk.yellow("WARN")}] ${msg}`);
+    latestLogs.push(`[${new Date()}] [WARN] ${msg}`);
+    if (latestLogs.length == maxLatestLogsLength) latestLogs.shift();
+}
+
+function ERROR(msg) {
+    console.log(`[${chalk.red(new Date())}] [${chalk.red("ERROR")}] ${msg}`);
+    latestLogs.push(`[${new Date()}] [ERROR] ${msg}`);
+    if (latestLogs.length == maxLatestLogsLength) latestLogs.shift();
+}
+
 function FATAL(msg, errorcode=-1) { console.log(chalk.bgRed(`[${new Date()}] [FATAL] ${msg}`)); process.exit(errorcode); }
 
 const express = require("express");
@@ -32,7 +55,10 @@ for (const modName of fs.readdirSync("./modules")) {
 
 app.get("/", (req, res) => {
     res.setHeader("Content-type", "text/plain");
-    res.send(`Hydrogen API Manager v${VERSION}`);
+    res.send(`Hydrogen API Manager v${VERSION}
+
+Logs:
+${latestLogs.join("\n")}`);
 });
 
 app.listen(process.env.PORT || 3157, () => {
